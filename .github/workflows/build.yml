@@ -32,20 +32,20 @@ jobs:
     - name: Initialize TWRP Manifest
       run: |
         mkdir twrp && cd twrp
-        repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git -b twrp-11.0 --depth=1
+        repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12.1 --depth=1
         repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
     - name: Clone Device Tree
       run: |
         cd twrp
-        git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git device/tecno/TECNO-LG6n
+        git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} device/tecno/TECNO-LG6n
 
     - name: Build TWRP
       run: |
         cd twrp
         export ALLOW_MISSING_DEPENDENCIES=true
         source build/envsetup.sh
-        lunch omni_TECNO-LG6n-eng || lunch omni_TECNO-LG6n-userdebug
+        lunch twrp_TECNO-LG6n-eng || lunch omni_TECNO-LG6n-eng || lunch omni_TECNO-LG6n-userdebug
         make recoveryimage -j$(nproc --all)
 
     - name: Upload TWRP Recovery Image
